@@ -1,0 +1,6 @@
+FolderPath;CreateEnvVar;AddToPath
+C:\Sys;True;True
+C:\Sys\Data;True;True
+C:\Sys\Icons;True;False
+C:\Sys\Scripts;True;True
+C:\Sys\Reports;False;False
