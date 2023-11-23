@@ -11,17 +11,26 @@ Use this script to exclude the local administrator from Romaing Profile.
 
 $ErrorActionPreference = 'Stop'
 
-$localAdministrator = $SecureVars.LocalAdministrator.Split(",").Trim()
-$users = @($localAdministrator)
+
+$exclude = @()
+
+If (![string]::IsNullOrEmpty($SecureVars.LocalAdministrator)) {
+    $localAdministrator = $SecureVars.LocalAdministrator.Split(",").Trim()
+    $exclude += $localAdministrator
+}
+
+If (![string]::IsNullOrEmpty($SecureVars.FSLogixExcludeList)) {
+    $excludedList = $SecureVars.FSLogixExcludeList.Split(",").Trim()
+    $exclude += $excludedList
+}
 
 try {
-    Write-Output ("Add users to Group: " + ($localAdministrator | Out-String))
-    Add-LocalGroupMember -Group "FSLogix ODFC Exclude List" -Member $users -ErrorAction SilentlyContinue
-    Add-LocalGroupMember -Group "FSLogix Profile Exclude List" -Member $users -ErrorAction SilentlyContinue
+    Write-Output ("Add users to Exclude Groups: " + ($exclude | Out-String))
+    Add-LocalGroupMember -Group "FSLogix ODFC Exclude List" -Member $exclude -ErrorAction SilentlyContinue
+    Add-LocalGroupMember -Group "FSLogix Profile Exclude List" -Member $exclude -ErrorAction SilentlyContinue
 
-}
-catch {
+} catch {
     $ErrorActionPreference = 'Continue'
-    write-output "Encountered error. $_"
-    Throw $_ 
+    Write-Output "Encountered error. $_"
+    Throw $_
 }
