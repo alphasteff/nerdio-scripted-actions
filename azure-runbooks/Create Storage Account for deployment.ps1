@@ -13,7 +13,7 @@ Use this script to create a Storage Account for deployment over Scripted Actions
 {
   "StorageAccountName": {
     "Description": "Name of the storage account to be created.",
-    "IsRequired": true,
+    "IsRequired": true
   },
   "DeploymentContainerName": {
     "Description": "Name of the container to be created for deployment scripts.",
@@ -27,8 +27,8 @@ Use this script to create a Storage Account for deployment over Scripted Actions
   },
   "ResourceGroupName": {
     "Description": "Name of the resource group where the storage account will be created.",
-    "IsRequired": true,
-  },
+    "IsRequired": true
+  }
 }
 #>
 

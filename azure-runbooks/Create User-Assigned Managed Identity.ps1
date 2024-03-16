@@ -15,6 +15,10 @@ Use this script to create a user-assigned managed identity in the resource group
     "Description": "Name of the user-assigned managed identity.",
     "IsRequired": true,
     "DefaultValue": "uami-nerdio-scripted-actions"
+  },
+  "ResourceGroupName": {
+    "Description": "Name of the resource group where the user assigned identity will be created.",
+    "IsRequired": true
   }
 }
 #>
@@ -33,19 +37,34 @@ $NMELocation = $KeyVault.Location
 try {
 
 
-  #Creating the user-assigned managed identity.
-  Write-Output "Create user-assigned managed identity"
-  $identity = New-AzUserAssignedIdentity -ResourceGroupName $NMEResourceGroupName -Name $UserManagedIdentityName -Location $NMELocation
+    #Creating the user-assigned managed identity.
+    Write-Output "Create user-assigned managed identity"
+    $identity = New-AzUserAssignedIdentity -ResourceGroupName $ResourceGroupName -Name $UserManagedIdentityName -Location $NMELocation
 
-}
-catch {
-  $ErrorActionPreference = 'Continue'
-  write-output "Encountered error. $_"
-  write-output "Rolling back changes"
+    $clientId = $identity.ClientId
+    $objectId = $identity.PrincipalId
+    $subscriptionId = $Context.Subscription.Id
 
-  if ($identity) {
-    Write-Output "Removing user-assigned managed identity $UserManagedIdentityName"
-    Remove-AzUserAssignedIdentity -ResourceGroupName $NMEResourceGroupName -Name $UserManagedIdentityName -Force -ErrorAction Continue
-  }
-  Throw $_ 
+    # Create Output for export the information
+    $Output = "{`"name`":`"$UserManagedIdentityName`", `"client_id`":`"$clientId`", `"object_id`":`"$objectId`", `"subscriptionid`":`"$subscriptionId`", `"resourcegroup`":`"$ResourceGroupName`"}"
+
+} catch {
+    $ErrorActionPreference = 'Continue'
+    Write-Output "Encountered error. $_"
+    Write-Output "Rolling back changes"
+
+    if ($identity) {
+        Write-Output "Removing user-assigned managed identity $UserManagedIdentityName"
+        Remove-AzUserAssignedIdentity -ResourceGroupName $NMEResourceGroupName -Name $UserManagedIdentityName -Force -ErrorAction Continue
+    }
+    Throw $_
 }
+
+Write-Output "User-assigned managed identity created successfully."
+Write-Output "User-assigned managed identity name: $UserManagedIdentityName"
+Write-Output "Resource Group: $ResourceGroupName"
+Write-Output "Subscription ID: $subscriptionId"
+Write-Output "Client ID: $clientId"
+Write-Output "Object ID: $objectId"
+
+Write-Output "Conten of Secute Varaible 'DeployIdentity' = $Output"
