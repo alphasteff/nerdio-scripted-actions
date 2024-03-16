@@ -18,12 +18,12 @@ Use this script to create a Storage Account for deployment over Scripted Actions
   "DeploymentContainerName": {
     "Description": "Name of the container to be created for deployment scripts.",
     "IsRequired": true,
-    "Default": "deployment"
+    "DefaultValue": "deployment"
   },
   "PrerequisiteName": {
     "Description": "Name of the container to be created for prerequisites.",
     "IsRequired": true,
-    "Default": "prereq"
+    "DefaultValue": "prereq"
   },
   "ResourceGroupName": {
     "Description": "Name of the resource group where the storage account will be created.",
