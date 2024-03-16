@@ -49,7 +49,7 @@ $PrerequisiteName = $PrerequisiteName.ToLower()
 try {
     # Creating the storage account
     Write-Output "Create storage account"
-    $storageAccount = New-AzStorageAccount -ResourceGroupName $ResourceGroupName -Name $StorageAccountName -Location $NMELocation -SkuName Standard_ZRS -Kind StorageV2 -EnableHttpsTrafficOnly $true -AllowBlobPublicAccess $true -PublicNetworkAccess 'Disabled' -ErrorAction Stop
+    $storageAccount = New-AzStorageAccount -ResourceGroupName $ResourceGroupName -Name $StorageAccountName -Location $NMELocation -SkuName Standard_ZRS -Kind StorageV2 -EnableHttpsTrafficOnly $true -AllowBlobPublicAccess $true -PublicNetworkAccess Enabled -ErrorAction Stop
 
     # Create a container for the deloyment scripts
     Write-Output "Create container for deployment scripts"
@@ -66,8 +66,8 @@ try {
     Write-Output "Encountered error. $_"
     Write-Output "Rolling back changes"
 
-    if ($identity) {
-        Write-Output "Removing user-assigned managed identity $UserManagedIdentityName"
+    if ($storageAccount) {
+        Write-Output "Removing storage account $StorageAccountName"
         Remove-AzStorageAccount -ResourceGroupName $ResourceGroupName -Name $StorageAccountName -Force
     }
     Throw $_
