@@ -49,7 +49,7 @@ $PrerequisiteName = $PrerequisiteName.ToLower()
 try {
     # Creating the storage account
     Write-Output "Create storage account"
-    $storageAccount = New-AzStorageAccount -ResourceGroupName $ResourceGroupName -Name $StorageAccountName -Location $NMELocation -SkuName Standard_ZRS -Kind StorageV2 -EnableHttpsTrafficOnly $true -PublicNetworkAccess 'Disabled' -ErrorAction Stop
+    $storageAccount = New-AzStorageAccount -ResourceGroupName $ResourceGroupName -Name $StorageAccountName -Location $NMELocation -SkuName Standard_ZRS -Kind StorageV2 -EnableHttpsTrafficOnly $true -AllowBlobPublicAccess $true -PublicNetworkAccess 'Disabled' -ErrorAction Stop
 
     # Create a container for the deloyment scripts
     Write-Output "Create container for deployment scripts"
