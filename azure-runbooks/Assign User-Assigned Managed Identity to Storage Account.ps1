@@ -15,12 +15,12 @@ Requires:
 <# Variables:
 {
   "ManagedIdentityVariable": {
-    "Description": "Name of the secure variable for the managed identity.",
+    "Description": "Name of the secure variable or variable for the managed identity.",
     "IsRequired": true,
     "DefaultValue": "DeployIdentity"
   },
   "StorageAccountVariable": {
-    "Description": "Name of the secure variable for the storage account.",
+    "Description": "Name of the secure variable or variable for the storage account.",
     "IsRequired": true,
     "DefaultValue": "DeployStorageAccount"
   }
@@ -34,6 +34,14 @@ $NMEIdString = ($KeyVaultName -split '-')[3]
 $KeyVault = Get-AzKeyVault -VaultName $KeyVaultName
 $Context = Get-AzContext
 $NMEResourceGroupName = $KeyVault.ResourceGroupName
+
+# Convert JSON string to PowerShell object and get secure variables for the managed identity and storage account
+# Check if the variable is a string or an object
+# If it is a string, get the secure variable and convert it to a PowerShell object
+# If it is an object, convert it to a PowerShell object
+
+Write-Output ("Type of ManagedIdentityVariable: " + $ManagedIdentityVariable.GetType().Name)
+Write-Output ("Type of StorageAccountVariable: " + $StorageAccountVariable.GetType().Name)
 
 Write-Output "Get secure variables"
 If ($ManagedIdentityVariable.GetType().Name -eq "String") {
@@ -51,7 +59,6 @@ If ([string]::IsNullOrEmpty($ManagedIdentity.name)) {
 } Else {
     Write-Output ("Managed Identity Name: " + $ManagedIdentity.name)
 }
-Write-Output ("Managed Identity: " + ($ManagedIdentity | Out-String))
 
 If ($StorageAccountVariable.GetType().Name -eq "String") {
     $StorageAccount = $SecureVars.$StorageAccountVariable | ConvertFrom-Json
@@ -68,11 +75,9 @@ If ([string]::IsNullOrEmpty($StorageAccount.name)) {
 } Else {
     Write-Output ("Storage Account Name : " + $StorageAccount.name | Out-String)
 }
-Write-Output ("Storage Account : " + ($StorageAccount | Out-String))
 
 ##### Script Logic #####
 
-<#
 try {
     #Assign the user-assigned managed identity.
     Write-Output "Assign user-assigned managed identity"
@@ -99,4 +104,3 @@ try {
     Write-Output "Encountered error. $_"
     Throw $_
 }
-#>
