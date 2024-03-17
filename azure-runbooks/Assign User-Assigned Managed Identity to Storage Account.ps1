@@ -36,15 +36,43 @@ $Context = Get-AzContext
 $NMEResourceGroupName = $KeyVault.ResourceGroupName
 
 Write-Output "Get secure variables"
-$ManagedIdentity = $SecureVars.$ManagedIdentityVariable | ConvertFrom-Json
-$StorageAccount = $SecureVars.$StorageAccountVariable | ConvertFrom-Json
+If ($ManagedIdentityVariable.GetType().Name -eq "String") {
+    $ManagedIdentity = $SecureVars.$ManagedIdentityVariable | ConvertFrom-Json
+} ElseIf ($ManagedIdentityVariable.GetType().Name -eq "Object") {
+    $ManagedIdentity = $ManagedIdentityVariable | ConvertFrom-Json
+} Else {
+    Write-Output "ManagedIdentityVariable is not a valid JSON object"
+    Exit
+}
 
+If ([string]::IsNullOrEmpty($ManagedIdentity.name)) {
+    Write-Output "ManagedIdentityVariable is not a valid JSON object"
+    Exit
+} Else {
+    Write-Output ("Managed Identity Name: " + $ManagedIdentity.name)
+}
 Write-Output ("Managed Identity: " + ($ManagedIdentity | Out-String))
+
+If ($StorageAccountVariable.GetType().Name -eq "String") {
+    $StorageAccount = $SecureVars.$StorageAccountVariable | ConvertFrom-Json
+} ElseIf ($StorageAccountVariable.GetType().Name -eq "Object") {
+    $StorageAccount = $StorageAccountVariable | ConvertFrom-Json
+} Else {
+    Write-Output "StorageAccountVariable is not a valid JSON object"
+    Exit
+}
+
+If ([string]::IsNullOrEmpty($StorageAccount.name)) {
+    Write-Output "StorageAccountVariable is not a valid JSON object"
+    Exit
+} Else {
+    Write-Output ("Storage Account Name : " + $StorageAccount.name | Out-String)
+}
 Write-Output ("Storage Account : " + ($StorageAccount | Out-String))
 
 ##### Script Logic #####
 
-
+<#
 try {
     #Assign the user-assigned managed identity.
     Write-Output "Assign user-assigned managed identity"
@@ -71,3 +99,4 @@ try {
     Write-Output "Encountered error. $_"
     Throw $_
 }
+#>
