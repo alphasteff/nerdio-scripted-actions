@@ -43,6 +43,9 @@ $NMEResourceGroupName = $KeyVault.ResourceGroupName
 
 Write-Output "Get secure variables"
 
+Write-Output ("Test : " + ($ManagedIdentityVariable | Out-String))
+Write-Output ("Test : " + ($StorageAccountVariable | Out-String))
+
 If ($ManagedIdentityVariable -contains "{") {
     Write-Output "Convert ManagedIdentityVariable to JSON object"
     $ManagedIdentity = $ManagedIdentityVariable | ConvertFrom-Json
