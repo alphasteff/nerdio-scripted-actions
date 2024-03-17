@@ -36,19 +36,19 @@ $Context = Get-AzContext
 $NMEResourceGroupName = $KeyVault.ResourceGroupName
 
 # Convert JSON string to PowerShell object and get secure variables for the managed identity and storage account
-# Check if the variable is a string or an object
-# If it is a string, get the secure variable and convert it to a PowerShell object
-# If it is an object, convert it to a PowerShell object
-
-Write-Output ("Type of ManagedIdentityVariable: " + $ManagedIdentityVariable.GetType().Name)
-Write-Output ("Type of StorageAccountVariable: " + $StorageAccountVariable.GetType().Name)
+# Check if the variable is a valid JSON object and convert it to a PowerShell object
+# If not, try to get the variable from the secure variables and convert it to a PowerShell object
+# If the variable is not a valid JSON object, exit the script
+# If the variable is a valid JSON object, continue with the script
 
 Write-Output "Get secure variables"
 
-$ManagedIdentity = $ManagedIdentityVariable | ConvertFrom-Json -ErrorAction SilentlyContinue
-
-If ([string]::IsNullOrEmpty($ManagedIdentity.name)) {
-    $ManagedIdentity = $SecureVars.$ManagedIdentityVariable | ConvertFrom-Json -ErrorAction SilentlyContinue
+If ($ManagedIdentityVariable -contains "{") {
+    Write-Output "Convert ManagedIdentityVariable to JSON object"
+    $ManagedIdentity = $ManagedIdentityVariable | ConvertFrom-Json
+} Else {
+    Write-Output "Get Secure Variable for ManagedIdentityVariable and convert to JSON object"
+    $ManagedIdentity = $SecureVars.$ManagedIdentityVariable | ConvertFrom-Json
 }
 
 If ([string]::IsNullOrEmpty($ManagedIdentity.name)) {
@@ -58,10 +58,12 @@ If ([string]::IsNullOrEmpty($ManagedIdentity.name)) {
     Write-Output ("Managed Identity Name: " + $ManagedIdentity.name)
 }
 
-$StorageAccount = $StorageAccountVariable | ConvertFrom-Json -ErrorAction SilentlyContinue
-
-If ([string]::IsNullOrEmpty($StorageAccount.name)) {
-    $StorageAccount = $SecureVars.$StorageAccountVariable | ConvertFrom-Json -ErrorAction SilentlyContinue
+If ($StorageAccountVariable -contains "{") {
+    Write-Output "Convert StorageAccountVariable to JSON object"
+    $StorageAccount = $StorageAccountVariable | ConvertFrom-Json
+} Else {
+    Write-Output "Get Secure Variable for StorageAccountVariable and convert to JSON object"
+    $StorageAccount = $SecureVars.$StorageAccountVariable | ConvertFrom-Json
 }
 
 If ([string]::IsNullOrEmpty($StorageAccount.name)) {
@@ -70,6 +72,7 @@ If ([string]::IsNullOrEmpty($StorageAccount.name)) {
 } Else {
     Write-Output ("Storage Account Name : " + $StorageAccount.name | Out-String)
 }
+
 
 ##### Script Logic #####
 <#
