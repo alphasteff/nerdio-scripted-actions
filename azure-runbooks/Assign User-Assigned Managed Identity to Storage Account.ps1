@@ -44,13 +44,11 @@ Write-Output ("Type of ManagedIdentityVariable: " + $ManagedIdentityVariable.Get
 Write-Output ("Type of StorageAccountVariable: " + $StorageAccountVariable.GetType().Name)
 
 Write-Output "Get secure variables"
-If ($ManagedIdentityVariable.GetType().Name -eq "String") {
-    $ManagedIdentity = $SecureVars.$ManagedIdentityVariable | ConvertFrom-Json
-} ElseIf ($ManagedIdentityVariable.GetType().Name -eq "Object") {
-    $ManagedIdentity = $ManagedIdentityVariable | ConvertFrom-Json
-} Else {
-    Write-Output "ManagedIdentityVariable is not a valid JSON object"
-    Exit
+
+$ManagedIdentity = $ManagedIdentityVariable | ConvertFrom-Json -ErrorAction SilentlyContinue
+
+If ([string]::IsNullOrEmpty($ManagedIdentity.name)) {
+    $ManagedIdentity = $SecureVars.$ManagedIdentityVariable | ConvertFrom-Json -ErrorAction SilentlyContinue
 }
 
 If ([string]::IsNullOrEmpty($ManagedIdentity.name)) {
@@ -60,13 +58,10 @@ If ([string]::IsNullOrEmpty($ManagedIdentity.name)) {
     Write-Output ("Managed Identity Name: " + $ManagedIdentity.name)
 }
 
-If ($StorageAccountVariable.GetType().Name -eq "String") {
+$StorageAccount = $StorageAccountVariable | ConvertFrom-Json
+
+If ([string]::IsNullOrEmpty($StorageAccount.name)) {
     $StorageAccount = $SecureVars.$StorageAccountVariable | ConvertFrom-Json
-} ElseIf ($StorageAccountVariable.GetType().Name -eq "Object") {
-    $StorageAccount = $StorageAccountVariable | ConvertFrom-Json
-} Else {
-    Write-Output "StorageAccountVariable is not a valid JSON object"
-    Exit
 }
 
 If ([string]::IsNullOrEmpty($StorageAccount.name)) {
@@ -77,7 +72,7 @@ If ([string]::IsNullOrEmpty($StorageAccount.name)) {
 }
 
 ##### Script Logic #####
-
+<#
 try {
     #Assign the user-assigned managed identity.
     Write-Output "Assign user-assigned managed identity"
@@ -104,3 +99,4 @@ try {
     Write-Output "Encountered error. $_"
     Throw $_
 }
+#>
