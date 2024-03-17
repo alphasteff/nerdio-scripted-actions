@@ -76,15 +76,13 @@ If ([string]::IsNullOrEmpty($StorageAccount.name)) {
 ##### Script Logic #####
 try {
     #Assign the user-assigned managed identity.
-    Write-Output "Assign user-assigned managed identity"
-    Write-Output ("Managed Identity: " + $ManagedIdentity.Name)
-    Write-Output ("Storage Account : " + $StorageAccount.Name)
-
     $actContext = Get-AzContext
     If ($actContext.Subscription.Id -ne $ManagedIdentity.subscriptionid) {
         Set-AzContext -SubscriptionId $ManagedIdentity.subscriptionid
     }
-    $identity = Get-AzUserAssignedIdentity -ResourceGroupName $ManagedIdentity.ResourceGroup -Name $ManagedIdentity.Name
+    $objIdentity = Get-AzUserAssignedIdentity -ResourceGroupName $ManagedIdentity.ResourceGroup -Name $ManagedIdentity.Name
+
+    Write-Output ("objIdentity = " + ($objIdentity | ConvertTo-Json))
 
     $actContext = Get-AzContext
     If ($actContext.Subscription.Id -ne $StorageAccount.subscriptionid) {
@@ -92,8 +90,10 @@ try {
     }
     $objStorageAccount = Get-AzStorageAccount -ResourceGroupName $StorageAccount.ResourceGroup -Name $StorageAccount.Name
 
-    New-AzRoleAssignment -ObjectId $identity.ClientId -Scope $objStorageAccount.Id -RoleDefinitionName "Storage Account Contributor"
+    Write-Output ("objStorageAccount = " + ($objStorageAccount | ConvertTo-Json))
 
+    Write-Output ("Assign user-assigned managed identity " + $objIdentity.Name + " to storage account " + $objStorageAccount.Name)
+    New-AzRoleAssignment -ObjectId $objIdentity.ClientId -Scope $objStorageAccount.Id -RoleDefinitionName "Storage Account Contributor"
 
 } catch {
     $ErrorActionPreference = 'Continue'
