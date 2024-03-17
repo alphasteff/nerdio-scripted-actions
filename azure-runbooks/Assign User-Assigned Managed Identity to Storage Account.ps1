@@ -35,8 +35,12 @@ $KeyVault = Get-AzKeyVault -VaultName $KeyVaultName
 $Context = Get-AzContext
 $NMEResourceGroupName = $KeyVault.ResourceGroupName
 
-$ManagedIdentityVariable = $SecureVars.$ManagedIdentityVariable | ConvertFrom-Json
-$StorageAccountVariable = $SecureVars.$StorageAccountVariable | ConvertFrom-Json
+Write-Output "Get secure variables"
+$ManagedIdentity = $SecureVars.$ManagedIdentityVariable | ConvertFrom-Json
+$StorageAccount = $SecureVars.$StorageAccountVariable | ConvertFrom-Json
+
+Write-Output ("Managed Identity: " + ($ManagedIdentity | Out-String))
+Write-Output ("Storage Account : " + ($StorageAccount | Out-String))
 
 ##### Script Logic #####
 
@@ -44,22 +48,22 @@ $StorageAccountVariable = $SecureVars.$StorageAccountVariable | ConvertFrom-Json
 try {
     #Assign the user-assigned managed identity.
     Write-Output "Assign user-assigned managed identity"
-    Write-Output ("Managed Identity: " + $ManagedIdentityVariable.Name)
-    Write-Output ("Storage Account : " + $StorageAccountVariable.Name)
+    Write-Output ("Managed Identity: " + $ManagedIdentity.Name)
+    Write-Output ("Storage Account : " + $StorageAccount.Name)
 
     $actContext = Get-AzContext
-    If ($actContext.Subscription.Id -ne $ManagedIdentityVariable.subscriptionid) {
-        Set-AzContext -SubscriptionId $ManagedIdentityVariable.subscriptionid
+    If ($actContext.Subscription.Id -ne $ManagedIdentity.subscriptionid) {
+        Set-AzContext -SubscriptionId $ManagedIdentity.subscriptionid
     }
-    $identity = Get-AzUserAssignedIdentity -ResourceGroupName $ManagedIdentityVariable.ResourceGroup -Name $ManagedIdentityVariable.Name
+    $identity = Get-AzUserAssignedIdentity -ResourceGroupName $ManagedIdentity.ResourceGroup -Name $ManagedIdentity.Name
 
     $actContext = Get-AzContext
-    If ($actContext.Subscription.Id -ne $StorageAccountVariable.subscriptionid) {
-        Set-AzContext -SubscriptionId $StorageAccountVariable.subscriptionid
+    If ($actContext.Subscription.Id -ne $StorageAccount.subscriptionid) {
+        Set-AzContext -SubscriptionId $StorageAccount.subscriptionid
     }
-    $storageAccount = Get-AzStorageAccount -ResourceGroupName $StorageAccountVariable.ResourceGroup -Name $StorageAccountVariable.Name
+    $objStorageAccount = Get-AzStorageAccount -ResourceGroupName $StorageAccount.ResourceGroup -Name $StorageAccount.Name
 
-    New-AzRoleAssignment -ObjectId $identity.ClientId -Scope $storageAccount.Id -RoleDefinitionName "Storage Account Contributor"
+    New-AzRoleAssignment -ObjectId $identity.ClientId -Scope $objStorageAccount.Id -RoleDefinitionName "Storage Account Contributor"
 
 
 } catch {
