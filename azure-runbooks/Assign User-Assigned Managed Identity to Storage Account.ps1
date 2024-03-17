@@ -46,7 +46,7 @@ Write-Output "Get secure variables"
 Write-Output ("Test : " + ($ManagedIdentityVariable | Out-String))
 Write-Output ("Test : " + ($StorageAccountVariable | Out-String))
 
-If ($ManagedIdentityVariable -contains "{") {
+If (Test-Json $ManagedIdentityVariable) {
     Write-Output "Convert ManagedIdentityVariable to JSON object"
     $ManagedIdentity = $ManagedIdentityVariable | ConvertFrom-Json
 } Else {
@@ -61,7 +61,7 @@ If ([string]::IsNullOrEmpty($ManagedIdentity.name)) {
     Write-Output ("Managed Identity Name: " + $ManagedIdentity.name)
 }
 
-If ($StorageAccountVariable -contains "{") {
+If (Test-Json $StorageAccountVariable) {
     Write-Output "Convert StorageAccountVariable to JSON object"
     $StorageAccount = $StorageAccountVariable | ConvertFrom-Json
 } Else {
