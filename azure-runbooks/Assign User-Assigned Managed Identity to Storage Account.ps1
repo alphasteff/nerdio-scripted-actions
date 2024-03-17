@@ -58,10 +58,10 @@ If ([string]::IsNullOrEmpty($ManagedIdentity.name)) {
     Write-Output ("Managed Identity Name: " + $ManagedIdentity.name)
 }
 
-$StorageAccount = $StorageAccountVariable | ConvertFrom-Json
+$StorageAccount = $StorageAccountVariable | ConvertFrom-Json -ErrorAction SilentlyContinue
 
 If ([string]::IsNullOrEmpty($StorageAccount.name)) {
-    $StorageAccount = $SecureVars.$StorageAccountVariable | ConvertFrom-Json
+    $StorageAccount = $SecureVars.$StorageAccountVariable | ConvertFrom-Json -ErrorAction SilentlyContinue
 }
 
 If ([string]::IsNullOrEmpty($StorageAccount.name)) {
