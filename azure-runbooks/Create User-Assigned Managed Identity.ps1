@@ -1,7 +1,7 @@
 ﻿#name: Create User-Assigned Managed Identity
 #description: Create a user-assigned managed identity to use in scripted actions.
 #execution mode: Combined
-#tags: beckmann.ch, Preview
+#tags: beckmann.ch
 
 <# Notes:
 

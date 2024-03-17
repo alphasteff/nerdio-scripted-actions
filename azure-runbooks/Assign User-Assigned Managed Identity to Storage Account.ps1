@@ -1,7 +1,7 @@
 ﻿#name: Assign User-Assigned Managed Identity to Storage Account
 #description: Assign a user-assigned managed identity to a Storage Account to get a SAS Token.
 #execution mode: Combined
-#tags: beckmann.ch, Preview
+#tags: beckmann.ch
 
 <# Notes:
 
@@ -35,22 +35,35 @@ $KeyVault = Get-AzKeyVault -VaultName $KeyVaultName
 $Context = Get-AzContext
 $NMEResourceGroupName = $KeyVault.ResourceGroupName
 
+$ManagedIdentityVariable = $SecureVars.$ManagedIdentityVariable | ConvertFrom-Json
+$StorageAccountVariable = $SecureVars.$StorageAccountVariable | ConvertFrom-Json
+
 ##### Script Logic #####
 
+
 try {
-  #Assign the user-assigned managed identity.
-  Write-Output "Assign user-assigned managed identity"
-  Write-Output ("Managed Identity: " + $SecureVars.$ManagedIdentityVariable)
-  Write-Output ("Storage Account : " + $SecureVars.$StorageAccountVariable)
-  $identity = Get-AzUserAssignedIdentity -ResourceGroupName $NMEResourceGroupName -Name $SecureVars.$ManagedIdentityVariable
-  $storageAccount = Get-AzStorageAccount -ResourceGroupName $NMEResourceGroupName -Name $SecureVars.$StorageAccountVariable
-  New-AzRoleAssignment -ObjectId $identity.ClientId -Scope $storageAccount.Id -RoleDefinitionName "Storage Account Contributor" 
+    #Assign the user-assigned managed identity.
+    Write-Output "Assign user-assigned managed identity"
+    Write-Output ("Managed Identity: " + $ManagedIdentityVariable.Name)
+    Write-Output ("Storage Account : " + $StorageAccountVariable.Name)
+
+    $actContext = Get-AzContext
+    If ($actContext.Subscription.Id -ne $ManagedIdentityVariable.subscriptionid) {
+        Set-AzContext -SubscriptionId $ManagedIdentityVariable.subscriptionid
+    }
+    $identity = Get-AzUserAssignedIdentity -ResourceGroupName $ManagedIdentityVariable.ResourceGroup -Name $ManagedIdentityVariable.Name
+
+    $actContext = Get-AzContext
+    If ($actContext.Subscription.Id -ne $StorageAccountVariable.subscriptionid) {
+        Set-AzContext -SubscriptionId $StorageAccountVariable.subscriptionid
+    }
+    $storageAccount = Get-AzStorageAccount -ResourceGroupName $StorageAccountVariable.ResourceGroup -Name $StorageAccountVariable.Name
+
+    New-AzRoleAssignment -ObjectId $identity.ClientId -Scope $storageAccount.Id -RoleDefinitionName "Storage Account Contributor"
 
 
+} catch {
+    $ErrorActionPreference = 'Continue'
+    Write-Output "Encountered error. $_"
+    Throw $_
 }
-catch {
-  $ErrorActionPreference = 'Continue'
-  write-output "Encountered error. $_"
-  Throw $_ 
-}
-

@@ -1,7 +1,7 @@
 ﻿#name: Create Storage Account for deployment
 #description: Create a Storage Account for deployment over Scripted Actions
 #execution mode: Combined
-#tags: beckmann.ch, Preview
+#tags: beckmann.ch
 
 <# Notes:
 
