@@ -35,16 +35,13 @@ $KeyVault = Get-AzKeyVault -VaultName $KeyVaultName
 $Context = Get-AzContext
 $NMEResourceGroupName = $KeyVault.ResourceGroupName
 
-# Convert JSON string to PowerShell object and get secure variables for the managed identity and storage account
+# Get secure variables for the managed identity and storage account
 # Check if the variable is a valid JSON object and convert it to a PowerShell object
 # If not, try to get the variable from the secure variables and convert it to a PowerShell object
 # If the variable is not a valid JSON object, exit the script
 # If the variable is a valid JSON object, continue with the script
 
 Write-Output "Get secure variables"
-
-Write-Output ("Test : " + ($ManagedIdentityVariable | Out-String))
-Write-Output ("Test : " + ($StorageAccountVariable | Out-String))
 
 If ($ManagedIdentityVariable -like "{*}") {
     Write-Output "Convert ManagedIdentityVariable to JSON object"
@@ -76,9 +73,7 @@ If ([string]::IsNullOrEmpty($StorageAccount.name)) {
     Write-Output ("Storage Account Name : " + $StorageAccount.name | Out-String)
 }
 
-
 ##### Script Logic #####
-<#
 try {
     #Assign the user-assigned managed identity.
     Write-Output "Assign user-assigned managed identity"
@@ -105,4 +100,3 @@ try {
     Write-Output "Encountered error. $_"
     Throw $_
 }
-#>
