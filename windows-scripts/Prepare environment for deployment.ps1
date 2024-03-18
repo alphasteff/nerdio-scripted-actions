@@ -1,7 +1,7 @@
 ﻿#name: Prepare environment for deployment
 #description: By configuring PowerShell, installing modules, creating folders and variables, prepare the environment for deployment.
 #execution mode: Individual with restart
-#tags: beckmann.ch, Preview
+#tags: beckmann.ch
 
 <# Notes:
 
@@ -26,16 +26,15 @@ try {
     New-Item -ItemType directory -Path "$env:SystemDrive\Sys" -ErrorAction SilentlyContinue;
     New-Item -ItemType directory -Path "$env:SystemDrive\Sys\Install" -ErrorAction SilentlyContinue;
 
-    (Get-Item "$env:SystemDrive\Sys" -Force).attributes="Hidden"
+    (Get-Item "$env:SystemDrive\Sys" -Force).attributes = "Hidden"
 
-    [System.Environment]::SetEnvironmentVariable('LogDir',"$env:windir\Logs",[System.EnvironmentVariableTarget]::Machine);
-    [System.Environment]::SetEnvironmentVariable('InstallLogDir',"$env:windir\Logs\Install",[System.EnvironmentVariableTarget]::Machine);
-    [System.Environment]::SetEnvironmentVariable('UninstallLogDir',"$env:windir\Logs\Uninstall",[System.EnvironmentVariableTarget]::Machine);
-    [System.Environment]::SetEnvironmentVariable('SysDir',"$env:SystemDrive\Sys",[System.EnvironmentVariableTarget]::Machine);
-    [System.Environment]::SetEnvironmentVariable('InstallDir',"$env:SystemDrive\Sys\Install",[System.EnvironmentVariableTarget]::Machine);
-}
-catch {
-  $ErrorActionPreference = 'Continue'
-  write-output "Encountered error. $_"
-  Throw $_ 
+    [System.Environment]::SetEnvironmentVariable('LogDir', "$env:windir\Logs", [System.EnvironmentVariableTarget]::Machine);
+    [System.Environment]::SetEnvironmentVariable('InstallLogDir', "$env:windir\Logs\Install", [System.EnvironmentVariableTarget]::Machine);
+    [System.Environment]::SetEnvironmentVariable('UninstallLogDir', "$env:windir\Logs\Uninstall", [System.EnvironmentVariableTarget]::Machine);
+    [System.Environment]::SetEnvironmentVariable('SysDir', "$env:SystemDrive\Sys", [System.EnvironmentVariableTarget]::Machine);
+    [System.Environment]::SetEnvironmentVariable('InstallDir', "$env:SystemDrive\Sys\Install", [System.EnvironmentVariableTarget]::Machine);
+} catch {
+    $ErrorActionPreference = 'Continue'
+    Write-Output "Encountered error. $_"
+    Throw $_
 }

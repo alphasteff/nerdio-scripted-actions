@@ -1,13 +1,15 @@
 ﻿#name: Install Basic Packages via Blob
 #description: Deploy Basic packages to the Desktop Image via Blob.
 #execution mode: Individual with restart
-#tags: beckmann.ch, Preview
+#tags: beckmann.ch
 
 <# Notes:
 
 Use this script to prepare a Desktop Image and install Basic Packages via Blob.
 
 #>
+
+$ErrorActionPreference = 'Stop'
 
 ##### Packages #####
 $Scripts = [System.Collections.ArrayList]@()
