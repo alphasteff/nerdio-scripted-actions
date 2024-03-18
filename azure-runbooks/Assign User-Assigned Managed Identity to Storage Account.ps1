@@ -93,6 +93,7 @@ try {
     Write-Output ("objStorageAccount = " + ($objStorageAccount | ConvertTo-Json))
 
     Write-Output ("Assign user-assigned managed identity " + $objIdentity.Name + " to storage account " + $objStorageAccount.StorageAccountName)
+    Write-Output "New-AzRoleAssignment -ObjectId $($objIdentity.ClientId) -Scope $($objStorageAccount.Id) -RoleDefinitionName" + '"Storage Account Contributor"'
     New-AzRoleAssignment -ObjectId $objIdentity.ClientId -Scope $objStorageAccount.Id -RoleDefinitionName "Storage Account Contributor"
 
 } catch {
