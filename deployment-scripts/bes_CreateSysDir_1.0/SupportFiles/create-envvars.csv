@@ -1,0 +1,5 @@
+EnvVarName;EnvVarValue;SpecialFolder;AddToPath
+AllUsersDesktop;CommonDesktopDirectory;True;False
+AllUsersPrograms;CommonPrograms;True;False
+AllUsersStartMenu;CommonStartMenu;True;False
+AllUsersStartup;CommonStartup;True;False

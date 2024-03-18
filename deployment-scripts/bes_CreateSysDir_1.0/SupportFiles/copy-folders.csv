@@ -1,0 +1,6 @@
+SourcePath;DestinationPath;CreateEnvVar;AddToPath
+Files\Bin;C:\Sys;True;True
+Files\Data;C:\Sys;True;True
+Files\Icons;C:\Sys;True;False
+Files\Links;C:\Sys;True;False
+Files\Scripts;C:\Sys;True;True
