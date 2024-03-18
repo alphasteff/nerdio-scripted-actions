@@ -82,19 +82,15 @@ try {
     }
     $objIdentity = Get-AzUserAssignedIdentity -ResourceGroupName $ManagedIdentity.ResourceGroup -Name $ManagedIdentity.Name
 
-    Write-Output ("objIdentity = " + ($objIdentity | ConvertTo-Json))
-
     $actContext = Get-AzContext
     If ($actContext.Subscription.Id -ne $StorageAccount.subscriptionid) {
         Set-AzContext -SubscriptionId $StorageAccount.subscriptionid
     }
     $objStorageAccount = Get-AzStorageAccount -ResourceGroupName $StorageAccount.ResourceGroup -Name $StorageAccount.Name
 
-    Write-Output ("objStorageAccount = " + ($objStorageAccount | ConvertTo-Json))
-
+    # $objIdentity.ObjectId does not work, use $objIdentity.PrincipalId
     Write-Output ("Assign user-assigned managed identity " + $objIdentity.Name + " to storage account " + $objStorageAccount.StorageAccountName)
-    Write-Output "New-AzRoleAssignment -ObjectId $($objIdentity.ClientId) -Scope $($objStorageAccount.Id) -RoleDefinitionName" + '"Storage Account Contributor"'
-    New-AzRoleAssignment -ObjectId $objIdentity.ClientId -Scope $objStorageAccount.Id -RoleDefinitionName "Storage Account Contributor"
+    New-AzRoleAssignment -ObjectId $objIdentity.PrincipalId -Scope $objStorageAccount.Id -RoleDefinitionName  "Storage Account Contributor"
 
 } catch {
     $ErrorActionPreference = 'Continue'
