@@ -1,5 +1,5 @@
 ﻿#name: Assign User-Assigned Managed Identity to VM
-#description: Assign a user-assigned managed identity to a  VM.
+#description: Assign a user-assigned managed identity to a VM.
 #execution mode: Individual
 #tags: beckmann.ch
 
@@ -10,6 +10,16 @@ Use this script to assign a user-assigned managed identity to a VM.
 Requires:
 - A variable with the name DeployIdentity and the value for the User-Assigned Managed Identity used for the deployment.
 
+#>
+
+<# Variables:
+{
+  "ManagedIdentityVariable": {
+    "Description": "Name of the secure variable or variable for the managed identity.",
+    "IsRequired": true,
+    "DefaultValue": "DeployIdentity"
+  }
+}
 #>
 
 $ErrorActionPreference = 'Stop'
@@ -42,9 +52,6 @@ $NMEIdString = ($KeyVaultName -split '-')[3]
 $NMEResourceGroupName = $KeyVault.ResourceGroupName
 $NMESubscriptionId = $KeyVault.ResourceId.Split('/')[2]
 
-$IdentityVariable = 'DeployIdentity'
-$identity = ConvertFrom-Json $SecureVars.$IdentityVariable
-
 Write-Output "KeyVaultName = $KeyVaultName"
 Write-Output "KeyVault = $KeyVault"
 Write-Output "Context = $Context"
@@ -58,17 +65,31 @@ Write-Output "AzureSubscriptionId = $AzureSubscriptionId"
 Write-Output "AzureSubscriptionName = $AzureSubscriptionName"
 Write-Output "AzureResourceGroupName = $AzureResourceGroupName"
 
+Write-Output "Get secure variables"
+If ($ManagedIdentityVariable -like "{*}") {
+    Write-Output "Convert ManagedIdentityVariable to JSON object"
+    $Identity = $ManagedIdentityVariable | ConvertFrom-Json
+} Else {
+    Write-Output "Get Secure Variable for ManagedIdentityVariable and convert to JSON object"
+    $Identity = $SecureVars.$ManagedIdentityVariable | ConvertFrom-Json
+}
+
+If ([string]::IsNullOrEmpty($Identity.name)) {
+    Write-Output "ManagedIdentityVariable is not a valid JSON object"
+    Exit
+} Else {
+    Write-Output ("Managed Identity Name: " + $Identity.name)
+}
+
 ##### Script Logic #####
 
 try {
     #Assign the user-assigned managed identity.
     Write-Output "Assign user-assigned managed identity"
     $umidentity = Get-AzUserAssignedIdentity -ResourceGroupName $Identity.resourcegroup -Name $Identity.name -SubscriptionId $Identity.subscriptionid
-
     Write-Output ("umidentity = {0}" -f ($umidentity | Out-String))
 
     $vm = Get-AzVM -ResourceGroupName $AzureResourceGroupName -VM $AzureVMName
-
     Write-Output ("VM = {0}" -f ($vm | Out-String))
 
     If ($vm.Identity.Type -eq 'SystemAssigned') {
@@ -87,6 +108,7 @@ try {
         }
     } ElseIf ($vm.Identity.Type -eq 'UserAssigned') {
         Write-Output ("User Assigned Identity exists, add an additional User Assigned Identity.")
+
         # Get the existing User Assigned Identities
         [array]$umidentities = $vm.Identity.UserAssignedIdentities.Keys
 
