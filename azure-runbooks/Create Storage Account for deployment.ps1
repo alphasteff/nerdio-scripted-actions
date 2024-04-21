@@ -17,7 +17,7 @@ Use this script to create a Storage Account for deployment over Scripted Actions
   },
   "SkuName": {
     "Description": "SKU of the storage account. (Standard_ZRS, Standard_GRS, Standard_LRS)",
-    "IsRequired": true
+    "IsRequired": true,
     "DefaultValue": "Standard_ZRS"
   },
   "DeploymentContainerName": {
