@@ -16,56 +16,19 @@ $ManagedIdentityVariable = 'DeployIdentity'
 
 $ErrorActionPreference = 'Stop'
 
-# Get all Azure Subscriptions
-$subscriptions = Get-AzSubscription
-
-# Get the current Azure Context
-$existingContext = Get-AzContext
-
-# Loop through all Azure Subscriptions and search Key Vaults with the name $KeyVaultName in each subscription
-ForEach ($subscription in $subscriptions) {
-    $context = Set-AzContext -SubscriptionId $subscription.Id
-    Write-Output "Checking subscription $($subscription.Name)"
-    $KeyVault = Get-AzKeyVault -VaultName $KeyVaultName -ErrorAction SilentlyContinue
-    If ($KeyVault) {
-        Write-Output "Found Key Vault $KeyVaultName in subscription $($subscription.Name)"
-        Break
-    }
-}
-
-# Set the Azure Context back to the original Azure Context
-$context = Set-AzContext -SubscriptionId $existingContext.Subscription.Id
-
-$actContext = Get-AzContext
-Write-Output ("ActContext = {0}" -f ($actContext | Out-String))
-
-$Prefix = ($KeyVaultName -split '-')[0]
-$NMEIdString = ($KeyVaultName -split '-')[3]
-$NMEResourceGroupName = $KeyVault.ResourceGroupName
-$NMESubscriptionId = $KeyVault.ResourceId.Split('/')[2]
-
-Write-Output "KeyVaultName = $KeyVaultName"
-Write-Output "KeyVault = $KeyVault"
-Write-Output "Context = $Context"
-
-Write-Output "Prefix = $Prefix"
-Write-Output "NMEIdString = $NMEIdString"
-Write-Output "NMEResourceGroupName = $NMEResourceGroupName"
-Write-Output "NMESubscriptionId = $NMESubscriptionId"
-
 Write-Output "AzureSubscriptionId = $AzureSubscriptionId"
 Write-Output "AzureSubscriptionName = $AzureSubscriptionName"
 Write-Output "AzureResourceGroupName = $AzureResourceGroupName"
 Write-Output "AzureVMName = $AzureVMName"
 
 Write-Output "Get Secure Variable for ManagedIdentityVariable and convert to JSON object"
-$Identity = $SecureVars.$ManagedIdentityVariable | ConvertFrom-Json
+$ManagedIdentity = $SecureVars.$ManagedIdentityVariable | ConvertFrom-Json
 
-If ([string]::IsNullOrEmpty($Identity.name)) {
+If ([string]::IsNullOrEmpty($ManagedIdentity.name)) {
     Write-Output "ManagedIdentityVariable is not a valid JSON object"
     Exit
 } Else {
-    Write-Output ("Managed Identity Name: " + $Identity.name)
+    Write-Output ("Managed Identity Name: " + $ManagedIdentity.name)
 }
 
 ##### Script Logic #####
@@ -73,7 +36,7 @@ If ([string]::IsNullOrEmpty($Identity.name)) {
 try {
     #Assign the user-assigned managed identity.
     Write-Output "Assign user-assigned managed identity"
-    $umidentity = Get-AzUserAssignedIdentity -ResourceGroupName $Identity.resourcegroup -Name $Identity.name -SubscriptionId $Identity.subscriptionid
+    $umidentity = Get-AzUserAssignedIdentity -ResourceGroupName $ManagedIdentity.resourcegroup -Name $ManagedIdentity.name -SubscriptionId $ManagedIdentity.subscriptionid
     Write-Output ("umidentity = {0}" -f ($umidentity | Out-String))
 
     $vm = Get-AzVM -ResourceGroupName $AzureResourceGroupName -VM $AzureVMName
