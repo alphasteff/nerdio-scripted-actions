@@ -1,7 +1,7 @@
 ﻿#name: Exclude users from FSLogix
 #description: Exclude user from FSLogix Romaing Profile.
 #execution mode: Combined
-#tags: beckmann.ch, Preview
+#tags: beckmann.ch
 
 <# Notes:
 
@@ -10,7 +10,6 @@ Use this script to exclude the local administrator from Romaing Profile.
 #>
 
 $ErrorActionPreference = 'Stop'
-
 
 $exclude = @()
 

@@ -1,7 +1,7 @@
 ﻿#name: Exclude and Include FSLogix users
 #description: Exclude and Include user for FSLogix Romaing Profile.
 #execution mode: Combined
-#tags: baseVISION
+#tags: beckmann.ch
 
 <# Notes:
 
