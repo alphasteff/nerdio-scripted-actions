@@ -12,15 +12,7 @@ Requires:
 
 #>
 
-<# Variables:
-{
-  "ManagedIdentityVariable": {
-    "Description": "Name of the secure variable or variable for the managed identity.",
-    "IsRequired": true,
-    "DefaultValue": "DeployIdentity"
-  }
-}
-#>
+$ManagedIdentityVariable = 'DeployIdentity'
 
 $ErrorActionPreference = 'Stop'
 
@@ -64,15 +56,10 @@ Write-Output "NMESubscriptionId = $NMESubscriptionId"
 Write-Output "AzureSubscriptionId = $AzureSubscriptionId"
 Write-Output "AzureSubscriptionName = $AzureSubscriptionName"
 Write-Output "AzureResourceGroupName = $AzureResourceGroupName"
+Write-Output "AzureVMName = $AzureVMName"
 
-Write-Output "Get secure variables"
-If ($ManagedIdentityVariable -like "{*}") {
-    Write-Output "Convert ManagedIdentityVariable to JSON object"
-    $Identity = $ManagedIdentityVariable | ConvertFrom-Json
-} Else {
-    Write-Output "Get Secure Variable for ManagedIdentityVariable and convert to JSON object"
-    $Identity = $SecureVars.$ManagedIdentityVariable | ConvertFrom-Json
-}
+Write-Output "Get Secure Variable for ManagedIdentityVariable and convert to JSON object"
+$Identity = $SecureVars.$ManagedIdentityVariable | ConvertFrom-Json
 
 If ([string]::IsNullOrEmpty($Identity.name)) {
     Write-Output "ManagedIdentityVariable is not a valid JSON object"
