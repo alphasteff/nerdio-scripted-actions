@@ -74,6 +74,27 @@ try {
     If ($vm.Identity.Type -eq 'SystemAssigned') {
         Write-Output ('System Assigned Identeity exists, add the User Assigned Identity.')
         Update-AzVM -ResourceGroupName $AzureResourceGroupName -VM $vm -IdentityType "SystemAssignedUserAssigned" -IdentityId $umidentity.Id
+    } ElseIf ($vm.Identity.Type -eq 'SystemAssignedUserAssigned') {
+        Write-Output ("System Assigned Identeity and User Assigned Identity exists, add an additional User Assigned Identity.")
+
+        # Get the existing User Assigned Identities
+        [array]$umidentities = $vm.Identity.UserAssignedIdentities.Keys
+
+        if ($umidentities -notcontains $umidentity.Id) {
+            # Add the User Assigned Identity to the existing User Assigned Identities
+            $umidentities += $umidentity.Id
+            Update-AzVM -ResourceGroupName $AzureResourceGroupName -VM $vm -IdentityType "SystemAssignedUserAssigned" -IdentityId $umidentities
+        }
+    } ElseIf ($vm.Identity.Type -eq 'UserAssigned') {
+        Write-Output ("User Assigned Identity exists, add an additional User Assigned Identity.")
+        # Get the existing User Assigned Identities
+        [array]$umidentities = $vm.Identity.UserAssignedIdentities.Keys
+
+        if ($umidentities -notcontains $umidentity.Id) {
+            # Add the User Assigned Identity to the existing User Assigned Identities
+            $umidentities += $umidentity.Id
+            Update-AzVM -ResourceGroupName $AzureResourceGroupName -VM $vm -IdentityType "UserAssigned" -IdentityId $umidentities
+        }
     } Else {
         Write-Output ("System Assigned Identeity doesn't exists, add only the User Assigned Identity.")
         Update-AzVM -ResourceGroupName $AzureResourceGroupName -VM $vm -IdentityType "UserAssigned" -IdentityId $umidentity.Id
