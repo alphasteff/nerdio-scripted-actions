@@ -8,8 +8,8 @@
 Use this script to authorize a user-assigned managed identity on a storage account to create a SAS token.
 
 Requires:
-- A variable with the name PerformanceTestingIdentity and the value for the User-Assigned Managed Identity used for the performance testing.
-- A variable with the name PerformanceTestingStorageAccount and the value for the storage account used for the performance testing.
+- A variable with the name PerfTestIdentity and the value for the User-Assigned Managed Identity used for the performance testing.
+- A variable with the name PerfTestStorage and the value for the storage account used for the performance testing.
 #>
 
 <# Variables:
@@ -17,12 +17,12 @@ Requires:
   "ManagedIdentityVariable": {
     "Description": "Name of the secure variable or variable for the managed identity.",
     "IsRequired": true,
-    "DefaultValue": "PerformanceTestingIdentity"
+    "DefaultValue": "PerfTestIdentity"
   },
   "StorageAccountVariable": {
     "Description": "Name of the secure variable or variable for the storage account.",
     "IsRequired": true,
-    "DefaultValue": "PerformanceTestingStorageAccount"
+    "DefaultValue": "PerfTestStorage"
   }
 }
 #>

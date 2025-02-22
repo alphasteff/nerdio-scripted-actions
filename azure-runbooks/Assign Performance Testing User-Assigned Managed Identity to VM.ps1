@@ -8,11 +8,11 @@
 Use this script to assign a user-assigned managed identity to a VM.
 
 Requires:
-- A variable with the name PerformanceTestingIdentity and the value for the User-Assigned Managed Identity used for the performance testing.
+- A variable with the name PerfTestIdentity and the value for the User-Assigned Managed Identity used for the performance testing.
 
 #>
 
-$ManagedIdentityVariable = 'PerformanceTestingIdentity'
+$ManagedIdentityVariable = 'PerfTestIdentity'
 
 $ErrorActionPreference = 'Stop'
 

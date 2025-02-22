@@ -63,7 +63,7 @@ try {
     $storageAccount = New-AzStorageAccount -ResourceGroupName $ResourceGroupName -Name $StorageAccountName -Location $NMELocation -SkuName $SkuName -Kind StorageV2 -EnableHttpsTrafficOnly $true -AllowBlobPublicAccess $true -PublicNetworkAccess Enabled -ErrorAction Stop
 
     # Create a container for the deloyment scripts
-    Write-Output "Create container for deployment scripts"
+    Write-Output "Create container for results data"
     $resultsContainer = New-AzStorageContainer -Name $ResultsContainerName -Permission Off -Context $storageAccount.Context -ErrorAction Stop
 
     # Create a container for the prerequisites
