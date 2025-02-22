@@ -67,4 +67,4 @@ Write-Output "Subscription ID: $subscriptionId"
 Write-Output "Client ID: $clientId"
 Write-Output "Object ID: $objectId"
 
-Write-Output "Conten of Secute Varaible 'DeployIdentity' = $Output"
+Write-Output "Content of Secure Variable 'DeployIdentity' = $Output"

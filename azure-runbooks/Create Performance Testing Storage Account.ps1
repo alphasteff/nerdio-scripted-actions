@@ -96,4 +96,4 @@ Write-Output "Result Container: $ResultsContainerName"
 Write-Output "Data Container: $DataContainerName"
 Write-Output "Bin Container: $BinContainerName"
 
-Write-Output "Conten of Secute Varaible 'PerformanceTestingStorageAccount' = $Output"
+Write-Output "Conten of Secute Varaible 'PerfTestStorage' = $Output"
