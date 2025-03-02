@@ -20,6 +20,8 @@ Customize the values below as desired.
 ### The following AppX packages are not excluded
 $AppxPackages = @"
 Microsoft.ScreenSketch,"https://www.microsoft.com/en-us/p/snip-sketch/9mz95kl8mr0l"
+Microsoft.WindowsAlarms,"https://www.microsoft.com/en-us/p/windows-alarms-clock/9wzdncrfj3pr"
+Microsoft.Windows.Photos,"https://www.microsoft.com/en-us/p/microsoft-photos/9wzdncrfjbh4"
 Microsoft.WindowsCalculator,"https://www.microsoft.com/en-us/p/windows-calculator/9wzdncrfhvn5"
 "@
 #>
@@ -38,9 +40,7 @@ Microsoft.People,"https://www.microsoft.com/en-us/p/microsoft-people/9nblggh10pg
 Microsoft.Print3D,"https://www.microsoft.com/en-us/p/print-3d/9pbpch085s3s"
 Microsoft.SkypeApp,"https://www.microsoft.com/en-us/p/skype/9wzdncrfj364"
 Microsoft.Wallet,"https://www.microsoft.com/en-us/payments"
-Microsoft.Windows.Photos,"https://www.microsoft.com/en-us/p/microsoft-photos/9wzdncrfjbh4"
 Microsoft.Microsoft3DViewer,"https://www.microsoft.com/en-us/p/3d-viewer/9nblggh42ths"
-Microsoft.WindowsAlarms,"https://www.microsoft.com/en-us/p/windows-alarms-clock/9wzdncrfj3pr"
 Microsoft.WindowsCamera,"https://www.microsoft.com/en-us/p/windows-camera/9wzdncrfjbbg"
 microsoft.windowscommunicationsapps,"https://www.microsoft.com/en-us/p/mail-and-calendar/9wzdncrfhvqm"
 Microsoft.WindowsFeedbackHub,"https://www.microsoft.com/en-us/p/feedback-hub/9nblggh4r32n"
@@ -59,10 +59,16 @@ Microsoft.ScreenSketch,"https://www.microsoft.com/en-us/p/snip-sketch/9mz95kl8mr
 "@
 
 # ================ Customize the Services To remove here. If a service is desired, delete the line.
+<#
+### The following services should not be disabled
+$Services = @"
+defragsvc # 29.06.2023, removed defragsvc because FSLogix need it
+"@
+#>
+
 $Services = @"
 autotimesvc
 BcastDVRUserService
-defragsvc
 DiagSvc
 DiagTrack
 DPS
